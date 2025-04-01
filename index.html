@@ -1,0 +1,410 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOTEL REAL CABO FRIO - Fidelidade</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="menu-icon" id="menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo">
+                <svg class="crown-icon" viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" fill="#C0A060"/>
+                </svg>
+                <h1>HOTEL REAL</h1>
+                <h2>CABO FRIO</h2>
+            </div>
+            <div class="notification-icon" id="notification-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" style="display: none;"></span>
+            </div> 
+        </header>
+
+        <div id="side-menu" class="side-menu">
+            <div class="side-menu-header">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="side-menu-user-info">
+                    <h3 id="menu-user-name">Nome do Cliente</h3>
+                    <p id="menu-user-level">Nível: Bronze</p>
+                </div>
+                <div class="close-menu" id="close-menu">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="side-menu-items">
+                <a href="#" class="menu-item" id="menu-home">
+                    <i class="fas fa-home"></i>
+                    <span>Início</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-partners">
+                    <i class="fas fa-store"></i>
+                    <span>Parceiros</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-reservations">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Reservas</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-vouchers">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Vouchers</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-shopping">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Compras</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-statement">
+                    <i class="fas fa-coins"></i>
+                    <span>Extrato</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-profile">
+                    <i class="fas fa-user"></i>
+                    <span>Meus Dados</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-scan">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Escanear</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-contact">
+                    <i class="fas fa-phone"></i>
+                    <span>Contato</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-help">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ajuda</span>
+                </a>
+                <a href="#" class="menu-item" id="menu-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </div>
+        <div id="menu-overlay" class="menu-overlay"></div>
+
+        <main>
+            <section id="login-section" class="active-section">
+                <div class="card">
+                    <h2>Programa de Fidelidade</h2>
+                    <p>Acumule pontos e ganhe benefícios exclusivos</p>
+                    <form id="login-form">
+                        <div class="input-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="password">Senha</label>
+                            <input type="password" id="password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Entrar</button>
+                    </form>
+                    <p class="form-footer">Não tem uma conta? <a href="#" id="show-register">Cadastre-se</a></p>
+                </div>
+            </section>
+
+            <section id="register-section">
+                <div class="card">
+                    <h2>Cadastre-se</h2>
+                    <p>Junte-se ao programa de fidelidade</p>
+                    <form id="register-form">
+                        <div class="input-group">
+                            <label for="reg-name">Nome Completo</label>
+                            <input type="text" id="reg-name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-email">E-mail</label>
+                            <input type="email" id="reg-email" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-phone">Telefone</label>
+                            <input type="tel" id="reg-phone" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-password">Senha</label>
+                            <input type="password" id="reg-password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Cadastrar</button>
+                    </form>
+                    <p class="form-footer">Já tem uma conta? <a href="#" id="show-login">Entrar</a></p>
+                </div>
+            </section>
+
+            <section id="dashboard-section">
+                <div class="profile-card">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 id="user-name">Nome do Cliente</h3>
+                            <p id="user-level">Nível: Bronze</p>
+                        </div>
+                    </div>
+                    <div class="points-display">
+                        <div class="points-circle">
+                            <span id="points-count">0</span>
+                        </div>
+                        <p>Pontos acumulados</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Adicionar Pontos</h2>
+                    <div class="add-points-options">
+                        <button id="scan-code-btn" class="btn-action">
+                            <i class="fas fa-qrcode"></i>
+                            Escanear Código
+                        </button>
+                        <button id="manual-points-btn" class="btn-action">
+                            <i class="fas fa-plus-circle"></i>
+                            Adicionar Código
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Histórico de Pontos</h2>
+                    <div id="points-history" class="history-list">
+                        <!-- Histórico será preenchido pelo JavaScript -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Benefícios</h2>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-coffee"></i>
+                            </div>
+                            <div class="benefit-info">
+                                <h4>Café da manhã exclusivo</h4>
+                                <p>500 pontos</p>
+                            </div>
+                            <button class="btn-redeem" data-points="500">Resgatar</button>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <div class="benefit-info">
+                                <h4>Upgrade de quarto</h4>
+                                <p>1000 pontos</p>
+                            </div>
+                            <button class="btn-redeem" data-points="1000">Resgatar</button>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-concierge-bell"></i>
+                            </div>
+                            <div class="benefit-info">
+                                <h4>Jantar Especial</h4>
+                                <p>1500 pontos</p>
+                            </div>
+                            <button class="btn-redeem" data-points="1500">Resgatar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="partners-section">
+                <div class="section-header">
+                    <button id="partners-back" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2 class="section-title">Parceiros</h2>
+                    <div style="width: 24px;"></div>
+                </div>
+                
+                <p class="section-description">Conheça nossos parceiros e troque seus pontos por produtos!</p>
+                
+                <div class="partners-list">
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Restaurante Praia Azul">
+                        </div>
+                        <div class="partner-info">
+                            <div class="partner-name">Restaurante Praia Azul</div>
+                            <span class="new-tag">Novo parceiro</span>
+                        </div>
+                    </div>
+                    
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="https://images.unsplash.com/photo-1520454974749-611b7248ffdb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Quiosque Pé na Areia">
+                        </div>
+                        <div class="partner-info">
+                            <div class="partner-name">Quiosque Pé na Areia</div>
+                        </div>
+                    </div>
+                    
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="https://images.unsplash.com/photo-1572116469696-31de0f17cc34?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Bar do Mar">
+                        </div>
+                        <div class="partner-info">
+                            <div class="partner-name">Bar do Mar</div>
+                        </div>
+                    </div>
+                    
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Shopping Cabo Mall">
+                        </div>
+                        <div class="partner-info">
+                            <div class="partner-name">Shopping Cabo Mall</div>
+                            <span class="new-tag">Novo parceiro</span>
+                        </div>
+                    </div>
+                    
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Translado Executivo">
+                        </div>
+                        <div class="partner-info">
+                            <div class="partner-name">Translado Executivo</div>
+                        </div>
+                    </div>
+                    
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Spa Oceano">
+                        </div>
+                        <div class="partner-info">
+                            <div class="partner-name">Spa Oceano</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="reservations-section">
+                <div class="section-header">
+                    <button id="reservations-back" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2 class="section-title">Reservas</h2>
+                    <div style="width: 24px;"></div>
+                </div>
+                
+                <div class="card calendar-container">
+                    <h2>Selecione suas datas</h2>
+                    <div class="calendar-header">
+                        <button id="prev-month" class="back-button">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="month-display" class="month-title">Mês Ano</span>
+                        <button id="next-month" class="back-button">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div id="calendar-grid" class="calendar">
+                        <!-- Calendar will be filled by JavaScript -->
+                    </div>
+                    <div id="date-display" class="date-display">Selecione as datas da sua estadia</div>
+                </div>
+                
+                <div class="card room-selection">
+                    <h2>Escolha seu quarto</h2>
+                    
+                    <div class="room-option" data-id="standard" data-price="350">
+                        <div class="room-header">
+                            <span class="room-name">Quarto Standard</span>
+                            <span class="room-price">R$ 350 / noite</span>
+                        </div>
+                        <p>Quarto confortável com vista para a cidade. Acomoda até 2 pessoas.</p>
+                        <div class="room-features">
+                            <span class="room-feature"><i class="fas fa-wifi"></i> Wi-Fi</span>
+                            <span class="room-feature"><i class="fas fa-tv"></i> TV</span>
+                            <span class="room-feature"><i class="fas fa-snowflake"></i> A/C</span>
+                        </div>
+                        <div class="room-total">Total: R$ 0,00</div>
+                    </div>
+                    
+                    <div class="room-option" data-id="superior" data-price="480">
+                        <div class="room-header">
+                            <span class="room-name">Quarto Superior</span>
+                            <span class="room-price">R$ 480 / noite</span>
+                        </div>
+                        <p>Quarto espaçoso com vista parcial para o mar. Acomoda até 3 pessoas.</p>
+                        <div class="room-features">
+                            <span class="room-feature"><i class="fas fa-wifi"></i> Wi-Fi</span>
+                            <span class="room-feature"><i class="fas fa-tv"></i> TV</span>
+                            <span class="room-feature"><i class="fas fa-snowflake"></i> A/C</span>
+                            <span class="room-feature"><i class="fas fa-coffee"></i> Café</span>
+                        </div>
+                        <div class="room-total">Total: R$ 0,00</div>
+                    </div>
+                    
+                    <div class="room-option" data-id="deluxe" data-price="650">
+                        <div class="room-header">
+                            <span class="room-name">Quarto Deluxe</span>
+                            <span class="room-price">R$ 650 / noite</span>
+                        </div>
+                        <p>Quarto premium com vista para o mar. Acomoda até 4 pessoas com varanda privativa.</p>
+                        <div class="room-features">
+                            <span class="room-feature"><i class="fas fa-wifi"></i> Wi-Fi</span>
+                            <span class="room-feature"><i class="fas fa-tv"></i> TV</span>
+                            <span class="room-feature"><i class="fas fa-snowflake"></i> A/C</span>
+                            <span class="room-feature"><i class="fas fa-coffee"></i> Café</span>
+                            <span class="room-feature"><i class="fas fa-couch"></i> Área</span>
+                        </div>
+                        <div class="room-total">Total: R$ 0,00</div>
+                    </div>
+                </div>
+                
+                <div class="card reservation-details">
+                    <h2>Detalhes da Reserva</h2>
+                    
+                    <div class="detail-row">
+                        <span>Noites:</span>
+                        <span id="nights-count">0</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Diária:</span>
+                        <span id="daily-rate">R$ 0,00</span>
+                    </div>
+                    <div class="detail-row total-row">
+                        <span>Total:</span>
+                        <span id="total-price">R$ 0,00</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Pontos a receber:</span>
+                        <span id="points-earned">0</span>
+                    </div>
+                </div>
+                
+                <p class="info-text">Ao confirmar sua reserva, você receberá um email com os detalhes completos.</p>
+                
+                <button id="confirm-reservation" class="btn-primary" disabled>Confirmar Reserva</button>
+            </section>
+
+            <section id="manual-points-section">
+                <div class="card">
+                    <h2>Adicionar Código</h2>
+                    <form id="code-form">
+                        <div class="input-group">
+                            <label for="reservation-code">Código da Reserva</label>
+                            <input type="text" id="reservation-code" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Validar</button>
+                        <button type="button" id="back-to-dashboard" class="btn-secondary">Voltar</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modal-message"></div>
+                <button id="modal-ok" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
