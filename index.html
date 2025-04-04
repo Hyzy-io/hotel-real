@@ -13,11 +13,9 @@
                 <i class="fas fa-bars"></i>
             </div>
             <div class="logo">
-                <svg class="crown-icon" viewBox="0 0 24 24" width="24" height="24">
-                    <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" fill="#C0A060"/>
-                </svg>
-                <h1>HOTEL REAL</h1>
-                <h2>CABO FRIO</h2>
+                                <svg width="200" height="40">
+                        <image x="0" y="0" width="150" height="40" href="https://4f96710e748626bd8f7352d45b5de3b2.cdn.bubble.io/f1743699229213x196432295856105120/Captura_de_tela_2025-04-03_134856-removebg-preview.png?_gl=1*zzkx92*_gcl_au*ODM1MjMyMDg1LjE3NDM2OTkyMDI.*_ga*Mzg1OTg4NDIxLjE3NDMxMDA3MjA.*_ga_BFPVR2DEE2*MTc0MzY4NDk1NS45LjEuMTc0MzcxMjM0MC42MC4wLjA."/>
+                    </svg>
             </div>
             <div class="notification-icon" id="notification-icon">
                 <i class="fas fa-bell"></i>
@@ -39,46 +37,42 @@
                 </div>
             </div>
             <div class="side-menu-items">
-                <a href="#" class="menu-item" id="menu-home">
-                    <i class="fas fa-home"></i>
-                    <span>Início</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-partners">
-                    <i class="fas fa-store"></i>
-                    <span>Parceiros</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-reservations">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Reservas</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-vouchers">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span>Vouchers</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-shopping">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span>Compras</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-statement">
-                    <i class="fas fa-coins"></i>
-                    <span>Extrato</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-profile">
-                    <i class="fas fa-user"></i>
-                    <span>Meus Dados</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-scan">
-                    <i class="fas fa-qrcode"></i>
-                    <span>Escanear</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-contact">
-                    <i class="fas fa-phone"></i>
-                    <span>Contato</span>
-                </a>
-                <a href="#" class="menu-item" id="menu-help">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Ajuda</span>
-                </a>
+                <a href="index.html" class="menu-item" id="menu-home">
+    <i class="fas fa-home"></i>
+    <span>Início</span>
+</a>
+<a href="#" class="menu-item" id="menu-partners">
+    <i class="fas fa-store"></i>
+    <span>Parceiros</span>
+</a>
+<a href="Vouchers/" class="menu-item" id="menu-vouchers">
+    <i class="fas fa-exchange-alt"></i>
+    <span>Vouchers</span>
+</a>
+<a href="Compras/" class="menu-item" id="menu-shopping">
+    <i class="fas fa-shopping-cart"></i>
+    <span>Compras</span>
+</a>
+<a href="Extrato/" class="menu-item" id="menu-statement">
+    <i class="fas fa-coins"></i>
+    <span>Extrato</span>
+</a>
+<a href="Meus dados/" class="menu-item" id="menu-profile">
+    <i class="fas fa-user"></i>
+    <span>Meus Dados</span>
+</a>
+<a href="features/" class="menu-item" id="menu-scan">
+    <i class="fas fa-qrcode"></i>
+    <span>Escanear</span>
+</a>
+<a href="Contato/" class="menu-item" id="menu-contact">
+    <i class="fas fa-phone"></i>
+    <span>Contato</span>
+</a>
+<a href="Ajuda/" class="menu-item" id="menu-help">
+    <i class="fas fa-question-circle"></i>
+    <span>Ajuda</span>
+</a>
                 <a href="#" class="menu-item" id="menu-logout">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Sair</span>
@@ -87,8 +81,20 @@
         </div>
         <div id="menu-overlay" class="menu-overlay"></div>
 
+        <!-- QR Code Scanner Modal -->
+        <div id="scanner-modal" class="modal">
+            <div class="modal-content scanner-content">
+                <span class="close-scanner">&times;</span>
+                <h3>Escaneie o Código QR</h3>
+                <div id="scanner-container">
+                    <video id="scanner-video"></video>
+                </div>
+                <button id="cancel-scan" class="btn-secondary">Cancelar</button>
+            </div>
+        </div>
+
         <main>
-            <section id="login-section" class="active-section">
+            <section id="login-section">
                 <div class="card">
                     <h2>Programa de Fidelidade</h2>
                     <p>Acumule pontos e ganhe benefícios exclusivos</p>
@@ -134,7 +140,7 @@
                 </div>
             </section>
 
-            <section id="dashboard-section">
+            <section id="dashboard-section" class="active-section">
                 <div class="profile-card">
                     <div class="user-info">
                         <div class="user-avatar">
@@ -164,6 +170,10 @@
                             <i class="fas fa-plus-circle"></i>
                             Adicionar Código
                         </button>
+                        <button id="add-reservation-btn" class="btn-action">
+                            <i class="fas fa-calendar-plus"></i>
+                            Nova Reserva
+                        </button>
                     </div>
                 </div>
 
@@ -176,36 +186,55 @@
 
                 <div class="card">
                     <h2>Benefícios</h2>
-                    <div class="benefits-list">
-                        <div class="benefit-item">
-                            <div class="benefit-icon">
-                                <i class="fas fa-coffee"></i>
-                            </div>
-                            <div class="benefit-info">
-                                <h4>Café da manhã exclusivo</h4>
-                                <p>500 pontos</p>
-                            </div>
-                            <button class="btn-redeem" data-points="500">Resgatar</button>
+                    <i class="fas fa-hotel hotel-icon" id="hotel-site-link" title="Visitar o site do hotel" style="color: blue;"></i>
+                    <div class="tabs">
+                        <div class="tab" id="tab-features">Destaques</div>
+                        <div class="tab" id="tab-reservations">Minhas Reservas</div>
+                        <div class="tab" id="tab-benefits">Benefícios</div>
+                    </div>
+                    
+                    <div id="content-features" class="tab-content">
+                        <!-- Features content will be filled by JavaScript -->
+                    </div>
+                    
+                    <div id="content-reservations" class="tab-content">
+                        <div id="reservations-list" class="reservation-list">
+                            <!-- Reservations will be filled by JavaScript -->
                         </div>
-                        <div class="benefit-item">
-                            <div class="benefit-icon">
-                                <i class="fas fa-bed"></i>
+                    </div>
+                    
+                    <div id="content-benefits" class="tab-content">
+                        <div class="benefits-list">
+                            <div class="benefit-item">
+                                <div class="benefit-icon">
+                                    <i class="fas fa-coffee"></i>
+                                </div>
+                                <div class="benefit-info">
+                                    <h4>Café da manhã exclusivo</h4>
+                                    <p>500 pontos</p>
+                                </div>
+                                <button class="btn-redeem" data-points="500">Resgatar</button>
                             </div>
-                            <div class="benefit-info">
-                                <h4>Upgrade de quarto</h4>
-                                <p>1000 pontos</p>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">
+                                    <i class="fas fa-bed"></i>
+                                </div>
+                                <div class="benefit-info">
+                                    <h4>Upgrade de quarto</h4>
+                                    <p>1000 pontos</p>
+                                </div>
+                                <button class="btn-redeem" data-points="1000">Resgatar</button>
                             </div>
-                            <button class="btn-redeem" data-points="1000">Resgatar</button>
-                        </div>
-                        <div class="benefit-item">
-                            <div class="benefit-icon">
-                                <i class="fas fa-concierge-bell"></i>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">
+                                    <i class="fas fa-concierge-bell"></i>
+                                </div>
+                                <div class="benefit-info">
+                                    <h4>Jantar Especial</h4>
+                                    <p>1500 pontos</p>
+                                </div>
+                                <button class="btn-redeem" data-points="1500">Resgatar</button>
                             </div>
-                            <div class="benefit-info">
-                                <h4>Jantar Especial</h4>
-                                <p>1500 pontos</p>
-                            </div>
-                            <button class="btn-redeem" data-points="1500">Resgatar</button>
                         </div>
                     </div>
                 </div>
@@ -281,107 +310,6 @@
                 </div>
             </section>
 
-            <section id="reservations-section">
-                <div class="section-header">
-                    <button id="reservations-back" class="back-button">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h2 class="section-title">Reservas</h2>
-                    <div style="width: 24px;"></div>
-                </div>
-                
-                <div class="card calendar-container">
-                    <h2>Selecione suas datas</h2>
-                    <div class="calendar-header">
-                        <button id="prev-month" class="back-button">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <span id="month-display" class="month-title">Mês Ano</span>
-                        <button id="next-month" class="back-button">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    <div id="calendar-grid" class="calendar">
-                        <!-- Calendar will be filled by JavaScript -->
-                    </div>
-                    <div id="date-display" class="date-display">Selecione as datas da sua estadia</div>
-                </div>
-                
-                <div class="card room-selection">
-                    <h2>Escolha seu quarto</h2>
-                    
-                    <div class="room-option" data-id="standard" data-price="350">
-                        <div class="room-header">
-                            <span class="room-name">Quarto Standard</span>
-                            <span class="room-price">R$ 350 / noite</span>
-                        </div>
-                        <p>Quarto confortável com vista para a cidade. Acomoda até 2 pessoas.</p>
-                        <div class="room-features">
-                            <span class="room-feature"><i class="fas fa-wifi"></i> Wi-Fi</span>
-                            <span class="room-feature"><i class="fas fa-tv"></i> TV</span>
-                            <span class="room-feature"><i class="fas fa-snowflake"></i> A/C</span>
-                        </div>
-                        <div class="room-total">Total: R$ 0,00</div>
-                    </div>
-                    
-                    <div class="room-option" data-id="superior" data-price="480">
-                        <div class="room-header">
-                            <span class="room-name">Quarto Superior</span>
-                            <span class="room-price">R$ 480 / noite</span>
-                        </div>
-                        <p>Quarto espaçoso com vista parcial para o mar. Acomoda até 3 pessoas.</p>
-                        <div class="room-features">
-                            <span class="room-feature"><i class="fas fa-wifi"></i> Wi-Fi</span>
-                            <span class="room-feature"><i class="fas fa-tv"></i> TV</span>
-                            <span class="room-feature"><i class="fas fa-snowflake"></i> A/C</span>
-                            <span class="room-feature"><i class="fas fa-coffee"></i> Café</span>
-                        </div>
-                        <div class="room-total">Total: R$ 0,00</div>
-                    </div>
-                    
-                    <div class="room-option" data-id="deluxe" data-price="650">
-                        <div class="room-header">
-                            <span class="room-name">Quarto Deluxe</span>
-                            <span class="room-price">R$ 650 / noite</span>
-                        </div>
-                        <p>Quarto premium com vista para o mar. Acomoda até 4 pessoas com varanda privativa.</p>
-                        <div class="room-features">
-                            <span class="room-feature"><i class="fas fa-wifi"></i> Wi-Fi</span>
-                            <span class="room-feature"><i class="fas fa-tv"></i> TV</span>
-                            <span class="room-feature"><i class="fas fa-snowflake"></i> A/C</span>
-                            <span class="room-feature"><i class="fas fa-coffee"></i> Café</span>
-                            <span class="room-feature"><i class="fas fa-couch"></i> Área</span>
-                        </div>
-                        <div class="room-total">Total: R$ 0,00</div>
-                    </div>
-                </div>
-                
-                <div class="card reservation-details">
-                    <h2>Detalhes da Reserva</h2>
-                    
-                    <div class="detail-row">
-                        <span>Noites:</span>
-                        <span id="nights-count">0</span>
-                    </div>
-                    <div class="detail-row">
-                        <span>Diária:</span>
-                        <span id="daily-rate">R$ 0,00</span>
-                    </div>
-                    <div class="detail-row total-row">
-                        <span>Total:</span>
-                        <span id="total-price">R$ 0,00</span>
-                    </div>
-                    <div class="detail-row">
-                        <span>Pontos a receber:</span>
-                        <span id="points-earned">0</span>
-                    </div>
-                </div>
-                
-                <p class="info-text">Ao confirmar sua reserva, você receberá um email com os detalhes completos.</p>
-                
-                <button id="confirm-reservation" class="btn-primary" disabled>Confirmar Reserva</button>
-            </section>
-
             <section id="manual-points-section">
                 <div class="card">
                     <h2>Adicionar Código</h2>
@@ -392,6 +320,56 @@
                         </div>
                         <button type="submit" class="btn-primary">Validar</button>
                         <button type="button" id="back-to-dashboard" class="btn-secondary">Voltar</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="add-reservation-section">
+                <div class="card">
+                    <h2>Adicionar Nova Reserva (Administrador)</h2>
+                    <form id="reservation-form">
+                        <div class="input-group">
+                            <label for="reservation-client">Cliente</label>
+                            <select id="reservation-client" class="select-input" required>
+                                <option value="">Selecione um cliente</option>
+                                <!-- Will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="reservation-checkin">Data de Check-in</label>
+                            <input type="date" id="reservation-checkin" class="date-input" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="reservation-checkout">Data de Check-out</label>
+                            <input type="date" id="reservation-checkout" class="date-input" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="reservation-time">Horário de Check-in</label>
+                            <select id="reservation-time" class="select-input" required>
+                                <option value="">Selecione um horário</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="reservation-room">Tipo de Quarto</label>
+                            <select id="reservation-room" class="select-input" required>
+                                <option value="">Selecione um tipo de quarto</option>
+                                <option value="Suíte Master com Vista para o Mar">Suíte Master com Vista para o Mar</option>
+                                <option value="Quarto Luxo Duplo">Quarto Luxo Duplo</option>
+                                <option value="Suíte Família">Suíte Família</option>
+                                <option value="Quarto Standard">Quarto Standard</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Salvar Reserva</button>
+                        <button type="button" id="back-from-reservation" class="btn-secondary">Voltar</button>
                     </form>
                 </div>
             </section>
@@ -406,5 +384,6 @@
         </div>
     </div>
     <script src="app.js"></script>
+
 </body>
 </html>

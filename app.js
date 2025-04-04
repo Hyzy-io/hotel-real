@@ -9,8 +9,62 @@ let userData = {
     notifications: []  // Add notifications array to store user notifications
 };
 
+// Simulated clients list for admin
+const hotelClients = [
+    { id: 1, name: "Maria Silva", email: "maria@example.com" },
+    { id: 2, name: "João Santos", email: "joao@example.com" },
+    { id: 3, name: "Ana Oliveira", email: "ana@example.com" },
+    { id: 4, name: "Carlos Souza", email: "carlos@example.com" },
+    { id: 5, name: "Patrícia Lima", email: "patricia@example.com" }
+];
+
 // Connection to WebSim multiplayer system
-const room = new WebsimSocket();
+// const room = new WebsimSocket(); // Simulação local
+const room = {
+    onmessage: null,
+    party: {
+        client: {
+            username: "euapatroa14"
+        }
+    },
+    collection: () => ({
+        filter: () => ({
+            getList: async () => [
+                {
+                    id: "user-001",
+                    username: "euapatroa14",
+                    email: "euapatroa14@gmail.com",
+                    points: 1200,
+                    level: "Ouro",
+                    history: [
+                        { date: "2023-03-01", description: "Reserva inicial", points: 1000, type: "credit" },
+                        { date: "2023-03-10", description: "Resgate: Upgrade de quarto", points: 1000, type: "debit" },
+                        { date: "2023-04-01", description: "Reserva adicional", points: 1200, type: "credit" }
+                    ],
+                    notifications: [
+                        {
+                            id: 1,
+                            title: "Boas-vindas",
+                            message: "Bem-vindo ao programa de fidelidade do Hotel Real Cabo Frio!",
+                            date: "2023-06-15",
+                            read: false
+                        },
+                        {
+                            id: 2,
+                            title: "Oferta Especial",
+                            message: "Ganhe o dobro de pontos em sua próxima hospedagem!",
+                            date: "2023-06-20",
+                            read: false
+                        }
+                    ]
+                }
+            ]
+        }),
+        update: async () => {},
+        create: async () => {}
+    })
+};
+
 
 // Valid codes for testing
 const validCodes = {
@@ -18,6 +72,11 @@ const validCodes = {
     'CABO2023': 200,
     'REAL5000': 500
 };
+
+// QR scanner variables
+let videoElement;
+let scannerActive = false;
+let scannerStream = null;
 
 // Example notifications data
 const exampleNotifications = [
@@ -44,6 +103,37 @@ const exampleNotifications = [
     }
 ];
 
+// Simulated reservation data
+const simulatedReservations = [
+    {
+        id: 'RES-20230615',
+        checkIn: '15/06/2023',
+        checkOut: '18/06/2023',
+        roomType: 'Suíte Master com Vista para o Mar',
+        status: 'completed',
+        statusText: 'Concluída',
+        time: '14:00'
+    },
+    {
+        id: 'RES-20231020',
+        checkIn: '20/10/2023',
+        checkOut: '25/10/2023',
+        roomType: 'Quarto Luxo Duplo',
+        status: 'completed',
+        statusText: 'Concluída',
+        time: '15:30'
+    },
+    {
+        id: 'RES-20240105',
+        checkIn: '05/01/2024',
+        checkOut: '10/01/2024',
+        roomType: 'Suíte Família',
+        status: 'upcoming',
+        statusText: 'Agendada',
+        time: '12:00'
+    }
+];
+
 // DOM Elements
 const sections = {
     login: document.getElementById('login-section'),
@@ -51,14 +141,24 @@ const sections = {
     dashboard: document.getElementById('dashboard-section'),
     manualPoints: document.getElementById('manual-points-section'),
     partners: document.getElementById('partners-section'),
-    reservations: document.getElementById('reservations-section')
+    addReservation: document.getElementById('add-reservation-section')
 };
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
+    // Login automático simulado
+    checkExistingUserData("euapatroa14").then(() => {
+        userData.isLoggedIn = true;
+        showSection('dashboard');
+        updateDashboard();
+        updateNotificationBadge();
+        initializeFeatures();
+    });
+
     initApp();
     setupEventListeners();
     setupWebsimConnection();
+    initializeFeatures(); // Initialize features content
 });
 
 function setupWebsimConnection() {
@@ -194,22 +294,11 @@ function setupEventListeners() {
         showModal('Você foi desconectado');
     });
     
-    // Reservations menu item
-    document.getElementById('menu-reservations').addEventListener('click', () => {
-        toggleMenu();
-        if (!userData.isLoggedIn) {
-            showModal('Faça login para acessar esta funcionalidade');
-            return;
-        }
-        initReservationsCalendar();
-        showSection('reservations');
-    });
-    
     // Partners menu item
     document.getElementById('menu-partners').addEventListener('click', () => {
         toggleMenu();
         if (!userData.isLoggedIn) {
-            showModal('Faça login para acessar esta funcionalidade');
+            showModal('Faça login para acessar estate funcionalidade');
             return;
         }
         showSection('partners');
@@ -217,11 +306,6 @@ function setupEventListeners() {
     
     // Back button in partners section
     document.getElementById('partners-back').addEventListener('click', () => {
-        showSection('dashboard');
-    });
-    
-    // Back button in reservations section
-    document.getElementById('reservations-back').addEventListener('click', () => {
         showSection('dashboard');
     });
     
@@ -240,9 +324,15 @@ function setupEventListeners() {
     
     // Dashboard Event Listeners
     document.getElementById('manual-points-btn').addEventListener('click', () => showSection('manualPoints'));
-    document.getElementById('scan-code-btn').addEventListener('click', handleScanCode);
+    document.getElementById('scan-code-btn').addEventListener('click', openQRScanner);
+    document.getElementById('add-reservation-btn').addEventListener('click', () => {
+        showSection('addReservation');
+        populateClientsDropdown();
+    });
     document.getElementById('back-to-dashboard').addEventListener('click', () => showSection('dashboard'));
+    document.getElementById('back-from-reservation').addEventListener('click', () => showSection('dashboard'));
     document.getElementById('code-form').addEventListener('submit', handleCodeSubmission);
+    document.getElementById('reservation-form').addEventListener('submit', handleReservationSubmission);
     
     // Modal close events
     document.querySelector('.close').addEventListener('click', hideModal);
@@ -253,21 +343,18 @@ function setupEventListeners() {
         button.addEventListener('click', handleRedeemClick);
     });
     
-    // Reservations calendar navigation
-    document.getElementById('prev-month').addEventListener('click', () => {
-        navigateCalendar(-1);
-    });
+    document.querySelector('.close-scanner').addEventListener('click', closeQRScanner);
+    document.getElementById('cancel-scan').addEventListener('click', closeQRScanner);
     
-    document.getElementById('next-month').addEventListener('click', () => {
-        navigateCalendar(1);
-    });
+    // Tab Navigation
+    document.getElementById('tab-features').addEventListener('click', () => switchTab('features'));
+    document.getElementById('tab-reservations').addEventListener('click', () => switchTab('reservations'));
+    document.getElementById('tab-benefits').addEventListener('click', () => switchTab('benefits'));
     
-    // Room selection and reservation confirmation
-    document.querySelectorAll('.room-option').forEach(room => {
-        room.addEventListener('click', handleRoomSelection);
+    // Hotel site link
+    document.getElementById('hotel-site-link').addEventListener('click', () => {
+        window.open('https://www.hotelrealcabofrio.com.br', '_blank');
     });
-    
-    document.getElementById('confirm-reservation').addEventListener('click', handleReservationConfirmation);
 }
 
 function handleLogin(e) {
@@ -340,7 +427,7 @@ function handleRegister(e) {
 }
 
 function handleScanCode() {
-    showModal('Funcionalidade de escaneamento em desenvolvimento');
+    openQRScanner();
 }
 
 function handleCodeSubmission(e) {
@@ -352,10 +439,13 @@ function handleCodeSubmission(e) {
         return;
     }
     
-    if (validCodes[code]) {
-        addPoints(validCodes[code], `Reserva: ${code}`);
+    // Check if the code is in the validCodes list or if it contains "44"
+    if (validCodes[code] || code.includes('44')) {
+        // If it's a predefined code, use its value, otherwise assign 100 points for codes with "44"
+        const pointsToAdd = validCodes[code] || 100;
+        addPoints(pointsToAdd, `Reserva: ${code}`);
         document.getElementById('reservation-code').value = '';
-        showModal(`Código validado com sucesso! Você ganhou ${validCodes[code]} pontos.`);
+        showModal(`Código validado com sucesso! Você ganhou ${pointsToAdd} pontos.`);
         showSection('dashboard');
     } else {
         showModal('Código inválido ou já utilizado');
@@ -399,56 +489,18 @@ function addPoints(amount, description) {
     updateDashboard();
 }
 
-function updateDashboard() {
-    if (!userData.isLoggedIn) return;
-    
-    document.getElementById('user-name').textContent = userData.name;
-    document.getElementById('user-level').textContent = `Nível: ${userData.level}`;
-    document.getElementById('points-count').textContent = userData.points;
-    
-    // Also update user info in side menu
-    document.getElementById('menu-user-name').textContent = userData.name;
-    document.getElementById('menu-user-level').textContent = `Nível: ${userData.level}`;
-    
-    // Update history
-    const historyContainer = document.getElementById('points-history');
-    historyContainer.innerHTML = '';
-    
-    if (userData.history.length === 0) {
-        historyContainer.innerHTML = '<p class="empty-state">Nenhuma atividade recente</p>';
-    } else {
-        userData.history.forEach(item => {
-            const historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            historyItem.innerHTML = `
-                <div>
-                    <div>${item.description}</div>
-                    <div class="date">${item.date}</div>
-                </div>
-                <div class="points ${item.type === 'credit' ? 'points-positive' : 'points-negative'}">
-                    ${item.type === 'credit' ? '+' : '-'}${item.points}
-                </div>
-            `;
-            historyContainer.appendChild(historyItem);
-        });
-    }
-    
-    // Update redeem buttons status
-    document.querySelectorAll('.btn-redeem').forEach(button => {
-        const pointsNeeded = parseInt(button.dataset.points);
-        button.disabled = userData.points < pointsNeeded;
-        button.style.opacity = userData.points < pointsNeeded ? '0.5' : '1';
-    });
-    
-    // Also update notification badge
-    updateNotificationBadge();
-}
-
 function showSection(sectionId) {
+    if (!sections) return; // Add null check for sections object
+    
     Object.keys(sections).forEach(key => {
-        sections[key].classList.remove('active-section');
+        if (sections[key]) { // Add null check for each section
+            sections[key].classList.remove('active-section');
+        }
     });
-    sections[sectionId].classList.add('active-section');
+    
+    if (sections[sectionId]) { // Add null check before accessing the section
+        sections[sectionId].classList.add('active-section');
+    }
 }
 
 function toggleMenu() {
@@ -534,222 +586,294 @@ function showNotifications() {
     });
 }
 
-// Calendar and Reservation functions
-let currentDate = new Date();
-let selectedStartDate = null;
-let selectedEndDate = null;
-let selectedRoom = null;
-
-function initReservationsCalendar() {
-    renderCalendar();
-    resetReservationUI();
-}
-
-function resetReservationUI() {
-    selectedStartDate = null;
-    selectedEndDate = null;
-    selectedRoom = null;
-    
-    document.querySelectorAll('.room-option').forEach(room => {
-        room.classList.remove('selected');
-    });
-    
-    document.getElementById('date-display').textContent = 'Selecione as datas da sua estadia';
-    document.getElementById('nights-count').textContent = '0';
-    document.getElementById('daily-rate').textContent = 'R$ 0,00';
-    document.getElementById('total-price').textContent = 'R$ 0,00';
-    document.getElementById('points-earned').textContent = '0';
-    document.getElementById('confirm-reservation').disabled = true;
-}
-
-function renderCalendar() {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    
-    const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
-    
-    document.getElementById('month-display').textContent = `${firstDay.toLocaleString('pt-BR', { month: 'long' })} ${year}`;
-    
-    const calendarContainer = document.getElementById('calendar-grid');
-    calendarContainer.innerHTML = '';
-    
-    // Day names
-    const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    dayNames.forEach(day => {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'day-name';
-        dayElement.textContent = day;
-        calendarContainer.appendChild(dayElement);
-    });
-    
-    // Empty cells before first day
-    for (let i = 0; i < startDayOfWeek; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'calendar-day empty';
-        calendarContainer.appendChild(emptyDay);
+function openQRScanner() {
+    if (!userData.isLoggedIn) {
+        showModal('Faça login para escanear códigos');
+        return;
     }
     
-    // Simulated reserved dates (example)
-    const reservedDates = [5, 6, 15, 16, 25];
+    // Show scanner modal
+    document.getElementById('scanner-modal').style.display = 'flex';
     
-    // Fill days
-    const today = new Date();
-    const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
+    // Setup video element
+    videoElement = document.getElementById('scanner-video');
     
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day';
-        dayElement.textContent = day;
-        
-        const currentDayDate = new Date(year, month, day);
-        
-        // Check if day is in the past
-        if (currentDayDate < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-            dayElement.classList.add('reserved');
-        } 
-        // Check if day is reserved
-        else if (reservedDates.includes(day)) {
-            dayElement.classList.add('reserved');
-        } 
-        // Check if it's today
-        else if (isCurrentMonth && today.getDate() === day) {
-            dayElement.classList.add('today');
-        }
-        
-        // Check if day is selected
-        if (selectedStartDate && selectedEndDate) {
-            const dayDate = new Date(year, month, day).setHours(0,0,0,0);
-            const start = selectedStartDate.setHours(0,0,0,0);
-            const end = selectedEndDate.setHours(0,0,0,0);
-            
-            if (dayDate >= start && dayDate <= end) {
-                dayElement.classList.add('selected');
-            }
-        }
-        
-        // Only add click event if day is not reserved
-        if (!dayElement.classList.contains('reserved')) {
-            dayElement.addEventListener('click', () => selectDate(new Date(year, month, day)));
-        }
-        
-        calendarContainer.appendChild(dayElement);
-    }
-}
-
-function navigateCalendar(direction) {
-    currentDate.setMonth(currentDate.getMonth() + direction);
-    renderCalendar();
-}
-
-function selectDate(date) {
-    if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-        // Start new selection
-        selectedStartDate = date;
-        selectedEndDate = null;
-        document.getElementById('date-display').textContent = `Check-in: ${formatDate(date)}`;
+    // Check if browser supports getUserMedia
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Start camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+            .then(function(stream) {
+                scannerStream = stream;
+                videoElement.srcObject = stream;
+                // Remove automatic play and add event listener instead
+                videoElement.addEventListener('canplay', function() {
+                    if (videoElement.paused) {
+                        videoElement.play().catch(function(error) {
+                            console.log("Play prevented by browser:", error);
+                            // Still proceed with scanner functionality even if autoplay is blocked
+                            scannerActive = true;
+                            scanQRCode();
+                        });
+                    }
+                    scannerActive = true;
+                    scanQRCode();
+                });
+            })
+            .catch(function(error) {
+                console.error("Cannot access camera: ", error);
+                showModal('Não foi possível acessar a câmera do dispositivo. Verifique as permissões.');
+                closeQRScanner();
+            });
     } else {
-        // Complete selection
-        if (date < selectedStartDate) {
-            selectedEndDate = selectedStartDate;
-            selectedStartDate = date;
-        } else {
-            selectedEndDate = date;
+        showModal('Seu navegador não suporta acesso à câmera');
+        closeQRScanner();
+    }
+}
+
+function closeQRScanner() {
+    document.getElementById('scanner-modal').style.display = 'none';
+    scannerActive = false;
+    
+    // Stop the camera stream
+    if (scannerStream) {
+        scannerStream.getTracks().forEach(track => {
+            track.stop();
+        });
+        scannerStream = null;
+    }
+}
+
+function scanQRCode() {
+    // This is a simplified simulation of QR scanning
+    // In a real app, you would use a library like jsQR or QuaggaJS
+    
+    if (!scannerActive) return;
+    
+    // For demo purposes, we'll simulate finding a QR code after 3 seconds
+    setTimeout(() => {
+        if (scannerActive) {
+            // Generate a random code that contains "44" to ensure it's valid
+            const randomDigits = Math.floor(Math.random() * 900) + 100;
+            const simulatedCode = `QR44${randomDigits}`;
+            
+            // Process the scanned code
+            processScannedCode(simulatedCode);
         }
-        
-        const nights = calculateNights(selectedStartDate, selectedEndDate);
-        document.getElementById('date-display').textContent = `${formatDate(selectedStartDate)} até ${formatDate(selectedEndDate)} (${nights} noites)`;
-        document.getElementById('nights-count').textContent = nights;
-        
-        // Enable room selection
-        updateRoomPrices(nights);
+    }, 3000);
+}
+
+function processScannedCode(code) {
+    closeQRScanner();
+    
+    if (code) {
+        // Check if the code is valid
+        if (validCodes[code] || code.includes('44')) {
+            // If it's a predefined code, use its value, otherwise assign 100 points for codes with "44"
+            const pointsToAdd = validCodes[code] || 100;
+            addPoints(pointsToAdd, `QR Code: ${code}`);
+            showModal(`Código QR validado com sucesso! Você ganhou ${pointsToAdd} pontos.`);
+        } else {
+            showModal('Código QR inválido ou já utilizado');
+        }
+    } else {
+        showModal('Não foi possível ler o código QR');
     }
-    
-    renderCalendar();
 }
 
-function formatDate(date) {
-    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-}
-
-function calculateNights(startDate, endDate) {
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    const diffDays = Math.round(Math.abs((startDate - endDate) / oneDay));
-    return diffDays;
-}
-
-function updateRoomPrices(nights) {
-    if (!nights) return;
-    
-    // Reset room selection
-    selectedRoom = null;
-    document.querySelectorAll('.room-option').forEach(room => {
-        room.classList.remove('selected');
-        
-        const pricePerNight = parseInt(room.dataset.price);
-        const totalPrice = pricePerNight * nights;
-        
-        room.querySelector('.room-price').textContent = `R$ ${pricePerNight.toLocaleString('pt-BR')} / noite`;
-        room.querySelector('.room-total').textContent = `Total: R$ ${totalPrice.toLocaleString('pt-BR')}`;
+function switchTab(tabId) {
+    // Remove active class from all tabs and contents
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
     });
     
-    document.getElementById('confirm-reservation').disabled = true;
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Add active class to selected tab and content
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+    document.getElementById(`content-${tabId}`).classList.add('active');
 }
 
-function handleRoomSelection(e) {
-    if (!selectedStartDate || !selectedEndDate) {
-        showModal('Por favor, selecione as datas de check-in e check-out primeiro.');
+function handleReservationSubmission(e) {
+    e.preventDefault();
+    const checkIn = document.getElementById('reservation-checkin').value;
+    const checkOut = document.getElementById('reservation-checkout').value;
+    const roomType = document.getElementById('reservation-room').value;
+    const reservationTime = document.getElementById('reservation-time').value;
+    const clientId = document.getElementById('reservation-client').value;
+    
+    if (!checkIn || !checkOut || !roomType || !reservationTime || !clientId) {
+        showModal('Por favor, preencha todos os campos');
         return;
     }
     
-    // Clear previous selection
-    document.querySelectorAll('.room-option').forEach(room => {
-        room.classList.remove('selected');
-    });
-    
-    // Set new selection
-    const roomElement = e.currentTarget;
-    roomElement.classList.add('selected');
-    
-    selectedRoom = {
-        id: roomElement.dataset.id,
-        name: roomElement.querySelector('.room-name').textContent,
-        price: parseInt(roomElement.dataset.price)
-    };
-    
-    // Update reservation details
-    const nights = calculateNights(selectedStartDate, selectedEndDate);
-    const totalPrice = selectedRoom.price * nights;
-    const pointsEarned = Math.floor(totalPrice / 10); // 1 point for each R$10
-    
-    document.getElementById('daily-rate').textContent = `R$ ${selectedRoom.price.toLocaleString('pt-BR')}`;
-    document.getElementById('total-price').textContent = `R$ ${totalPrice.toLocaleString('pt-BR')}`;
-    document.getElementById('points-earned').textContent = pointsEarned;
-    
-    // Enable confirmation button
-    document.getElementById('confirm-reservation').disabled = false;
-}
-
-function handleReservationConfirmation() {
-    if (!selectedStartDate || !selectedEndDate || !selectedRoom) {
-        showModal('Por favor, complete sua seleção para confirmar a reserva.');
+    // Find selected client
+    const selectedClient = hotelClients.find(client => client.id == clientId);
+    if (!selectedClient) {
+        showModal('Cliente inválido');
         return;
     }
     
-    const nights = calculateNights(selectedStartDate, selectedEndDate);
-    const totalPrice = selectedRoom.price * nights;
-    const pointsEarned = Math.floor(totalPrice / 10);
+    // Generate a reservation ID
+    const reservationId = 'RES-' + new Date().getTime().toString().slice(-8);
     
-    // In a real app, we would send this to the server
-    // For this demo, we'll just add points and show confirmation
-    addPoints(pointsEarned, `Reserva: ${selectedRoom.name}`);
+    // Add to simulated reservations
+    simulatedReservations.unshift({
+        id: reservationId,
+        checkIn: formatDate(checkIn),
+        checkOut: formatDate(checkOut),
+        roomType: roomType,
+        status: 'upcoming',
+        statusText: 'Agendada',
+        time: reservationTime,
+        clientName: selectedClient.name
+    });
     
-    showModal(`Sua reserva foi confirmada com sucesso! Você ganhou ${pointsEarned} pontos. Um e-mail de confirmação foi enviado para ${userData.email}.`);
+    // Add points for new reservation to the client
+    addPoints(200, `Nova Reserva: ${reservationId}`);
     
-    // Reset UI and go back to dashboard
-    resetReservationUI();
+    // Reset form
+    document.getElementById('reservation-form').reset();
+    
+    showModal(`Reserva adicionada com sucesso para ${selectedClient.name}! 200 pontos adicionados.`);
     showSection('dashboard');
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+}
+
+function updateDashboard() {
+    if (!userData.isLoggedIn) return;
+    
+    document.getElementById('user-name').textContent = userData.name;
+    document.getElementById('user-level').textContent = `Nível: ${userData.level}`;
+    document.getElementById('points-count').textContent = userData.points;
+    
+    // Also update user info in side menu
+    document.getElementById('menu-user-name').textContent = userData.name;
+    document.getElementById('menu-user-level').textContent = `Nível: ${userData.level}`;
+    
+    // Update history
+    const historyContainer = document.getElementById('points-history');
+    historyContainer.innerHTML = '';
+    
+    if (userData.history.length === 0) {
+        historyContainer.innerHTML = '<p class="empty-state">Nenhuma atividade recente</p>';
+    } else {
+        userData.history.forEach(item => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <div>${item.description}</div>
+                    <div class="date">${item.date}</div>
+                </div>
+                <div class="points ${item.type === 'credit' ? 'points-positive' : 'points-negative'}">
+                    ${item.type === 'credit' ? '+' : '-'}${item.points}
+                </div>
+            `;
+            historyContainer.appendChild(historyItem);
+        });
+    }
+    
+    // Update redeem buttons status
+    document.querySelectorAll('.btn-redeem').forEach(button => {
+        const pointsNeeded = parseInt(button.dataset.points);
+        button.disabled = userData.points < pointsNeeded;
+        button.style.opacity = userData.points < pointsNeeded ? '0.5' : '1';
+        button.style.cursor = userData.points < pointsNeeded ? 'not-allowed' : 'pointer';
+    });
+    
+    // Initialize tabs (switch to features tab by default)
+    switchTab('features');
+    
+    // Populate reservations list
+    const reservationsContainer = document.getElementById('reservations-list');
+    reservationsContainer.innerHTML = '';
+    
+    if (simulatedReservations.length === 0) {
+        reservationsContainer.innerHTML = '<p class="empty-state">Nenhuma reserva encontrada</p>';
+    } else {
+        // Reverse the array to show the latest reservation first
+        [...simulatedReservations].reverse().forEach(reservation => {
+            const reservationItem = document.createElement('div');
+            reservationItem.className = 'reservation-item';
+            
+            // Add WhatsApp button for upcoming reservations
+            const whatsappButton = reservation.status === 'upcoming' ? 
+                `<a href="https://wa.me/5522999999999" target="_blank" class="whatsapp-link">
+                    <i class="fab fa-whatsapp"></i>
+                </a>` : '';
+            
+            reservationItem.innerHTML = `
+                <div class="reservation-dates">
+                    <span>Check-in: ${reservation.checkIn} (${reservation.time})</span>
+                    <span>Check-out: ${reservation.checkOut}</span>
+                </div>
+                <div class="reservation-room">${reservation.roomType}</div>
+                <div class="reservation-footer">
+                    <div>Reserva #${reservation.id}</div>
+                    <span class="reservation-status status-${reservation.status}">${reservation.statusText}</span>
+                    ${whatsappButton}
+                </div>
+            `;
+            reservationsContainer.appendChild(reservationItem);
+        });
+    }
+    
+    // Also update notification badge
+    updateNotificationBadge();
+}
+
+function populateClientsDropdown() {
+    const dropdown = document.getElementById('reservation-client');
+    dropdown.innerHTML = '<option value="">Selecione um cliente</option>';
+    
+    hotelClients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client.id;
+        option.textContent = `${client.name} (${client.email})`;
+        dropdown.appendChild(option);
+    });
+}
+
+// Features tab functionality
+function initializeFeatures() {
+    // Setup tab functionality
+    document.getElementById('tab-features').addEventListener('click', () => switchTab('features'));
+    populateFeaturesContent();
+}
+
+function populateFeaturesContent() {
+    const featuresContainer = document.getElementById('content-features');
+    if (!featuresContainer) return;
+    
+    featuresContainer.innerHTML = `
+        <div class="features-list">
+            <div class="feature-item">
+                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Café da manhã especial">
+                <div class="feature-info">
+                    <h4>Café da manhã especial</h4>
+                    <p>Nosso café da manhã especial inclui pratos regionais e vista para o mar.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Piscina exclusiva">
+                <div class="feature-info">
+                    <h4>Piscina exclusiva</h4>
+                    <p>Nossa piscina exclusiva está disponível para hóspedes VIP.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Passeio de barco">
+                <div class="feature-info">
+                    <h4>Passeio de barco</h4>
+                    <p>Desfrute de um passeio de barco pelas praias de Cabo Frio.</p>
+                </div>
+            </div>
+        </div>
+    `;
 }
