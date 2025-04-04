@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Extrato de Pontos</title>
+  <link rel="stylesheet" href="extrato.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    #statement-section {
+      padding: 10px;
+    }
+    .points-positive {
+      color: green;
+    }
+    .points-negative {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <section id="statement-section" class="active-section">
+    <div class="section-header">
+      <button id="statement-back" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <h2 class="section-title">Extrato</h2>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <p class="section-description">
+      Consulte seu histórico de pontos acumulados e resgates
+    </p>
+
+    <div class="timeline" id="statement-timeline">
+      <!-- Itens do extrato serão inseridos aqui -->
+    </div>
+  </section>
+
+  <script src="extrato.js"></script>
+</body>
+</html>
