@@ -1,6 +1,6 @@
 :root {
     --dark-blue: #1A2634;
-    --gold: #2A2E34;
+    --gold: #C0A060;
     --white: #FFFFFF;
     --dark-gray: #2A2E35;
     --light-gray: #F5F5F5;
@@ -34,7 +34,7 @@
     background: none;
     border: none;
     font-size: 1.2rem;
-    color: var(--gold);
+    color: var(--dark-blue);
     padding: 5px;
     cursor: pointer;
 }

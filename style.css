@@ -849,10 +849,6 @@ nav {
     color: var(--dark-blue);
 }
 
-#add-reservation-section {
-    display: none;
-}
-
 .feature-info p {
     margin: 0;
     font-size: 0.85rem;

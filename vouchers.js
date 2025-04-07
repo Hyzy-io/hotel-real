@@ -10,83 +10,85 @@ const room = {
   })
 };
 
-// DADOS FICTÍCIOS - REMOVER DEPOIS
-const userData = {
-  isLoggedIn: true,
-  points: 3500,
-  finishedVouchers: [
-    {
-      id: 1,
-      title: 'Jantar Especial',
-      partner: 'Restaurante Vista Mar',
-      date: '2023-12-10',
-      points: 1500,
-      status: 'Utilizado'
-    },
-    {
-      id: 2,
-      title: 'Massagem Relaxante',
-      partner: 'Spa Beira-Mar',
-      date: '2023-11-15',
-      points: 800,
-      status: 'Expirado'
-    }
-  ],
-  activeVouchers: [
-    {
-      id: 1,
-      title: 'Desconto no Spa',
-      points: 1000
-    },
-    {
-      id: 2,
-      title: 'Almoço Executivo',
-      points: 800
-    },
-    {
-      id: 3,
-      title: 'Café Force',
-      points: 1000
-    },
-    {
-      id: 4,
-      title: 'PPR Executivo',
-      points: 8000
-    }
-  ],
-  partners: [
-    {
-      id: 1,
-      name: "Restaurante Praia Azul",
-      image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-    },
-    {
-      id: 2,
-      name: "Quiosque Pé na Areia",
-      image: "https://images.unsplash.com/photo-1520454974749-611b7248ffdb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-    },
-    {
-      id: 3,
-      name: "Bar do Mar",
-      image: "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-    },
-    {
-      id: 4,
-      name: "Shopping Cabo Mall",
-      image: "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-    },
-    {
-      id: 5,
-      name: "Translado Executivo",
-      image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-    },
-    {
-      id: 6,
-      name: "Spa Oceano",
-      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-    }
-  ]
-};
+if (typeof userData === 'undefined') {
+  var userData = {
+    isLoggedIn: true,
+    points: 3500,
+    finishedVouchers: [
+      {
+        id: 1,
+        title: 'Jantar Especial',
+        partner: 'Restaurante Vista Mar',
+        date: '2023-12-10',
+        points: 1500,
+        status: 'Utilizado'
+      },
+      {
+        id: 2,
+        title: 'Massagem Relaxante',
+        partner: 'Spa Beira-Mar',
+        date: '2023-11-15',
+        points: 800,
+        status: 'Expirado'
+      }
+    ],
+    activeVouchers: [
+      {
+        id: 1,
+        title: 'Desconto no Spa',
+        points: 1000
+      },
+      {
+        id: 2,
+        title: 'Almoço Executivo',
+        points: 800
+      },
+      {
+        id: 3,
+        title: 'Café Force',
+        points: 1000
+      },
+      {
+        id: 4,
+        title: 'PPR Executivo',
+        points: 8000
+      }
+    ],
+    partners: [
+      {
+        id: 1,
+        name: "Restaurante Praia Azul",
+        image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+      },
+      {
+        id: 2,
+        name: "Quiosque Pé na Areia",
+        image: "https://images.unsplash.com/photo-1520454974749-611b7248ffdb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+      },
+      {
+        id: 3,
+        name: "Bar do Mar",
+        image: "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+      },
+      {
+        id: 4,
+        name: "Shopping Cabo Mall",
+        image: "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+      },
+      {
+        id: 5,
+        name: "Translado Executivo",
+        image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+      },
+      {
+        id: 6,
+        name: "Spa Oceano",
+        image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+      }
+    ]
+  };
+}
+
 
 function updateVouchersScreen() {
   const pointsValue = document.getElementById('vouchers-points-value');
