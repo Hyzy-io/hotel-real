@@ -312,15 +312,20 @@ function setupEventListeners() {
     // Generic function for menu items that show a modal
     const menuItems = ['vouchers', 'shopping', 'statement', 'profile', 'scan', 'contact', 'help'];
     menuItems.forEach(item => {
-        document.getElementById(`menu-${item}`).addEventListener('click', () => {
-            toggleMenu();
-            if (!userData.isLoggedIn && item !== 'help') {
-                showModal('Faça login para acessar esta funcionalidade');
-                return;
-            }
-            showModal(`Funcionalidade "${document.getElementById(`menu-${item}`).querySelector('span').textContent}" em desenvolvimento`);
-        });
+    const el = document.getElementById(`menu-${item}`);
+        if (el && el.getAttribute('href') === '#') {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu();
+                if (!userData.isLoggedIn && item !== 'help') {
+                    showModal('Faça login para acessar esta funcionalidade');
+                    return;
+                }
+                showModal(`Funcionalidade "${el.querySelector('span').textContent}" em desenvolvimento`);
+            });
+        }
     });
+
     
     // Dashboard Event Listeners
     document.getElementById('manual-points-btn').addEventListener('click', () => showSection('manualPoints'));
