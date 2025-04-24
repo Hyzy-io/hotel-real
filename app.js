@@ -17,20 +17,10 @@ const sections = {
     addReservation: document.getElementById('add-reservation-section')
 };
 
-// Initialize the app
-document.addEventListener('DOMContentLoaded', () => {
-    // Login automático simulado
-    checkExistingUserData("euapatroa14").then(() => {
-        userData.isLoggedIn = true;
-        showSection('dashboard');
-        updateDashboard();
-        updateNotificationBadge();
-        initializeFeatures();
-    });
+
 
     initApp();
     setupEventListeners();
-    setupWebsimConnection();
     initializeFeatures(); // Initialize features content
 });
 
