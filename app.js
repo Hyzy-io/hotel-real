@@ -1,138 +1,11 @@
-// Simulated user data
-let userData = {
-    isLoggedIn: false,
-    name: '',
-    email: '',
-    points: 0,
-    history: [],
-    level: 'Bronze',
-    notifications: []  // Add notifications array to store user notifications
-};
+// Supabase
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-// Simulated clients list for admin
-const hotelClients = [
-    { id: 1, name: "Maria Silva", email: "maria@example.com" },
-    { id: 2, name: "João Santos", email: "joao@example.com" },
-    { id: 3, name: "Ana Oliveira", email: "ana@example.com" },
-    { id: 4, name: "Carlos Souza", email: "carlos@example.com" },
-    { id: 5, name: "Patrícia Lima", email: "patricia@example.com" }
-];
+const supabase = createClient(
+  'https://kpjwznuthdnodfqgnidk.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwand6bnV0aGRub2RmcWduaWRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4MDcxMjcsImV4cCI6MjA1OTM4MzEyN30.8rtnknzowlYM393S_awylDyKHBG9P3cI2VrKgQwxqNU'
+);
 
-// Connection to WebSim multiplayer system
-// const room = new WebsimSocket(); // Simulação local
-const room = {
-    onmessage: null,
-    party: {
-        client: {
-            username: "euapatroa14"
-        }
-    },
-    collection: () => ({
-        filter: () => ({
-            getList: async () => [
-                {
-                    id: "user-001",
-                    username: "euapatroa14",
-                    email: "euapatroa14@gmail.com",
-                    points: 1200,
-                    level: "Ouro",
-                    history: [
-                        { date: "2023-03-01", description: "Reserva inicial", points: 1000, type: "credit" },
-                        { date: "2023-03-10", description: "Resgate: Upgrade de quarto", points: 1000, type: "debit" },
-                        { date: "2023-04-01", description: "Reserva adicional", points: 1200, type: "credit" }
-                    ],
-                    notifications: [
-                        {
-                            id: 1,
-                            title: "Boas-vindas",
-                            message: "Bem-vindo ao programa de fidelidade do Hotel Real Cabo Frio!",
-                            date: "2023-06-15",
-                            read: false
-                        },
-                        {
-                            id: 2,
-                            title: "Oferta Especial",
-                            message: "Ganhe o dobro de pontos em sua próxima hospedagem!",
-                            date: "2023-06-20",
-                            read: false
-                        }
-                    ]
-                }
-            ]
-        }),
-        update: async () => {},
-        create: async () => {}
-    })
-};
-
-
-// Valid codes for testing
-const validCodes = {
-    'RESERVE123': 100,
-    'CABO2023': 200,
-    'REAL5000': 500
-};
-
-// QR scanner variables
-let videoElement;
-let scannerActive = false;
-let scannerStream = null;
-
-// Example notifications data
-const exampleNotifications = [
-    {
-        id: 1,
-        title: "Boas-vindas",
-        message: "Bem-vindo ao programa de fidelidade do Hotel Real Cabo Frio!",
-        date: "2023-06-15",
-        read: false
-    },
-    {
-        id: 2,
-        title: "Oferta Especial",
-        message: "Ganhe o dobro de pontos em sua próxima hospedagem!",
-        date: "2023-06-20",
-        read: false
-    },
-    {
-        id: 3,
-        title: "Novo Parceiro",
-        message: "Restaurante Praia Azul é nosso novo parceiro. Troque seus pontos por refeições!",
-        date: "2023-06-25",
-        read: false
-    }
-];
-
-// Simulated reservation data
-const simulatedReservations = [
-    {
-        id: 'RES-20230615',
-        checkIn: '15/06/2023',
-        checkOut: '18/06/2023',
-        roomType: 'Suíte Master com Vista para o Mar',
-        status: 'completed',
-        statusText: 'Concluída',
-        time: '14:00'
-    },
-    {
-        id: 'RES-20231020',
-        checkIn: '20/10/2023',
-        checkOut: '25/10/2023',
-        roomType: 'Quarto Luxo Duplo',
-        status: 'completed',
-        statusText: 'Concluída',
-        time: '15:30'
-    },
-    {
-        id: 'RES-20240105',
-        checkIn: '05/01/2024',
-        checkOut: '10/01/2024',
-        roomType: 'Suíte Família',
-        status: 'upcoming',
-        statusText: 'Agendada',
-        time: '12:00'
-    }
-];
 
 // DOM Elements
 const sections = {
@@ -362,74 +235,131 @@ function setupEventListeners() {
     });
 }
 
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    
-    // Simple validation
+
     if (!email || !password) {
         showModal('Por favor, preencha todos os campos');
         return;
     }
-    
-    // For demo purposes, any login is accepted
-    userData = {
-        isLoggedIn: true,
-        name: email.split('@')[0], // Use part of email as name
-        email: email,
-        points: 0,
-        history: [],
-        level: 'Bronze',
-        notifications: email === "euapatroa14@gmail.com" ? exampleNotifications : []
-    };
-    
-    // Save to WebSim storage instead of localStorage
-    saveUserData();
-    
-    showSection('dashboard');
-    updateDashboard();
-    updateNotificationBadge();
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) {
+            showModal('Login inválido: ' + error.message);
+            return;
+        }
+
+        // Buscar perfil na tabela personalizada "usuarios"
+        const { data: perfil, error: userError } = await supabase
+            .from('usuarios')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+        if (userError || !perfil) {
+            showModal('Usuário não encontrado');
+            return;
+        }
+
+        userData = {
+            isLoggedIn: true,
+            name: perfil.nome_usuario || email.split('@')[0],
+            email: perfil.email,
+            phone: perfil.telefone || '',
+            points: perfil.pontos || 0,
+            history: [],
+            level: perfil.nivel || 'Bronze',
+            notifications: []
+        };
+
+        showSection('dashboard');
+        updateDashboard();
+        updateNotificationBadge();
+    } catch (err) {
+        console.error(err);
+        showModal('Erro ao tentar fazer login. Tente novamente.');
+    }
 }
 
-function handleRegister(e) {
+
+// 🧾 Registro real usando Supabase Auth + inserção na tabela 'usuarios'
+async function handleRegister(e) {
     e.preventDefault();
+
+    // 📥 Captura dos campos do formulário
     const name = document.getElementById('reg-name').value;
     const email = document.getElementById('reg-email').value;
     const phone = document.getElementById('reg-phone').value;
     const password = document.getElementById('reg-password').value;
-    
-    // Simple validation
+
     if (!name || !email || !phone || !password) {
         showModal('Por favor, preencha todos os campos');
         return;
     }
-    
-    // Create new user
-    userData = {
-        isLoggedIn: true,
-        name: name,
-        email: email,
-        phone: phone,
-        points: 100, // Welcome bonus
-        history: [{
-            date: new Date().toLocaleDateString(),
-            description: 'Bônus de boas-vindas',
+
+    try {
+        // 🔐 Criação do usuário no Supabase Auth
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password
+        });
+
+        if (error) {
+            showModal('Erro ao cadastrar: ' + error.message);
+            return;
+        }
+
+        // 🗃 Inserção na tabela 'usuarios' com dados adicionais
+        const { error: insertError } = await supabase
+            .from('usuarios')
+            .insert({
+                nome_usuario: name,
+                email: email,
+                telefone: phone,
+                pontos: 100,
+                nivel: 'Bronze',
+                criado_em: new Date().toISOString()
+            });
+
+        if (insertError) {
+            showModal('Erro ao salvar perfil: ' + insertError.message);
+            return;
+        }
+
+        // ✅ Atualiza o usuário localmente após o cadastro
+        userData = {
+            isLoggedIn: true,
+            name: name,
+            email: email,
+            phone: phone,
             points: 100,
-            type: 'credit'
-        }],
-        level: 'Bronze',
-        notifications: []
-    };
-    
-    // Save to WebSim storage instead of localStorage
-    saveUserData();
-    
-    showModal('Cadastro realizado com sucesso! Você ganhou 100 pontos de boas-vindas.');
-    showSection('dashboard');
-    updateDashboard();
-    updateNotificationBadge();
+            history: [{
+                date: new Date().toLocaleDateString(),
+                description: 'Bônus de boas-vindas',
+                points: 100,
+                type: 'credit'
+            }],
+            level: 'Bronze',
+            notifications: []
+        };
+
+        showModal('Cadastro realizado com sucesso! Você ganhou 100 pontos de boas-vindas.');
+        showSection('dashboard');
+        updateDashboard();
+        updateNotificationBadge();
+    } catch (err) {
+        console.error(err);
+        showModal('Erro inesperado. Tente novamente mais tarde.');
+    }
 }
+
 
 function handleScanCode() {
     openQRScanner();
